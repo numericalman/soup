@@ -1,0 +1,7 @@
+[2024-09-10 18:29:02.297728] [info]:	Log init
+[2024-09-10 18:29:02.323624] [trace]:	A trace severity message
+[2024-09-10 18:29:02.323696] [debug]:	A debug severity message
+[2024-09-10 18:29:02.323799] [info]:	An informational severity message
+[2024-09-10 18:29:02.323866] [warning]:	A warning severity message
+[2024-09-10 18:29:02.323922] [error]:	An error severity message
+[2024-09-10 18:29:02.323977] [fatal]:	A fatal severity message

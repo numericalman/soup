@@ -1,0 +1,181 @@
+% Reliable UDP Flow Protocol
+% Author: Dmytro Tarasiuk
+\documentclass{article}
+\textwidth=360pt \textheight=615pt
+\usepackage{tikz}
+%%%<
+\usepackage{verbatim}
+\usepackage[active,tightpage]{preview}
+\usepackage[dvipsnames, svgnames, x11names]{xcolor} % for colors
+\PreviewEnvironment{center}
+\setlength\PreviewBorder{10pt}%
+%%%>
+\begin{comment}
+:Title: Reliable UDP Flow Protocol
+:Tags: Networking;Protocol;Internet
+:Author: Dmytro Tarasiuk
+:Slug: client-server-communication
+
+Protoc Description.
+\end{comment}
+
+\usepackage[T1,T2A]{fontenc}
+% \usepackage[utf8x]{inputenc} % for using ukraine letters
+\usepackage[ukrainian]{babel} % дозвіл використовувати українську мову
+
+\usetikzlibrary{decorations.pathmorphing}
+\tikzset{snake it/.style={decorate, decoration=snake}}
+
+\usetikzlibrary{arrows}
+
+\pgfdeclarelayer{bg}    % declare background layer
+\pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
+
+
+\title{Протокол обміну Stream Over UDP Protocol (SOUP)}
+\author{Дмитро Тарасюк}
+\date{2024 \\ Вересень}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{tikzpicture}[>=latex]
+
+  \path
+    (-5,0.5) node {CLIENT}
+    (3,0.5) node {SERVER};
+
+
+  \draw[thick,->,double,black] (0,0.5) -- (0,-13) node[below]{Time};
+
+
+  \def\ysh{-1cm} \def\pn{BEG1} \def\dt{$\Delta t$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++({180-21}:1.7);
+  \draw[yshift=\ysh,thick,<-,black!40] (-0.4,0) -- ++({180-21}:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  \draw[yshift=\ysh,thick,<-,black!25] (-0.8,0) -- ++({180-21}:1.7);
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[yshift=\ysh,thick,thin,blue!40,fill=blue!10] (0,0) node [below left,text=black]{\dt} -- ++(180:1) arc (-180:-90:1cm);     
+  \end{pgfonlayer}
+
+
+  \def\ysh{-2cm} \def\pn{BEG2} \def\dt{$\Delta t$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++(21:1.7);
+  \draw[yshift=\ysh,thick,<-,black!40] (0.4,0) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  \draw[yshift=\ysh,thick,<-,black!25] (0.8,0) -- ++(21:1.7);
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[yshift=\ysh,thick,thin,green!50,fill=green!15] (0,0) node [below right,text=black]{\dt} -- ++(0:1) arc (0:-90:1cm);     
+  \end{pgfonlayer}
+
+
+  \def\ysh{-3cm} \def\pn{DAT1} \def\dt{$\Delta T$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++({180-21}:1.7);
+  \draw[yshift=\ysh,thick,<-,black!40] (-0.4,0) -- ++({180-21}:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  \draw[yshift=\ysh,thick,<-,black!25] (-0.8,0) -- ++({180-21}:1.7);
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[yshift=\ysh,thick,thin,blue!40,fill=blue!10] (0,0) node [below left,text=black]{\dt} -- ++(180:1) arc (-180:-90:1cm);     
+  \end{pgfonlayer}
+
+
+  % Wave Time Line Segment
+  \draw[double,thick,snake it,red] (0,-4) -- (0,-10);
+
+
+  \def\ysh{-4cm} \def\pn{DAT2}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++(21:1.7);
+  \path[yshift=\ysh] (0.4,0) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  % (+)
+  \draw[yshift=\ysh,fill=black!15] (0,-.6) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,-.6) -- ++(21:1.7);
+  \path[yshift=\ysh] (0.4,-.6) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  % (+)
+  \path[yshift=\ysh] (0.4,-1.3) -- ++(21:1.7) node[above,text=black]{$\vdots$};
+  % (+)
+  \draw[yshift=\ysh,fill=black!15] (0,-2) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,-2) -- ++(21:1.7);
+  \path[yshift=\ysh] (0.4,-2) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+ 
+
+  \def\ysh{-6cm} \def\pn{LOS1} \def\dt{$\Delta t$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++({180-21}:1.7);
+  \draw[yshift=\ysh,thick,<-,black!40] (-0.4,0) -- ++({180-21}:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  \draw[yshift=\ysh,thick,<-,black!25] (-0.8,0) -- ++({180-21}:1.7);
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[yshift=\ysh,thick,thin,blue!40,fill=blue!10] (0,0) node [below left,text=black]{\dt} -- ++(180:1) arc (-180:-90:1cm);     
+  \end{pgfonlayer}
+
+
+  \def\ysh{-7cm} \def\pn{LOS2} \def\dt{$\Delta t$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++(21:1.7);
+  \draw[yshift=\ysh,thick,<-,black!40] (0.4,0) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  \draw[yshift=\ysh,thick,<-,black!25] (0.8,0) -- ++(21:1.7);
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[yshift=\ysh,thick,thin,green!50,fill=green!15] (0,0) node [below right,text=black]{\dt} -- ++(0:1) arc (0:-90:1cm);     
+  \end{pgfonlayer}
+
+
+  \def\ysh{-8cm} \def\pn{DAT2} \def\dt{$\Delta T$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++(21:1.7);
+  \path[yshift=\ysh] (0.4,0) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  % (+)
+  \draw[yshift=\ysh,fill=black!15] (0,-.6) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,-.6) -- ++(21:1.7);
+  \path[yshift=\ysh] (0.4,-.6) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  % (+)
+  \path[yshift=\ysh] (0.4,-1.3) -- ++(21:1.7) node[above,text=black]{$\vdots$};
+  % (+)
+  \draw[yshift=\ysh,fill=black!15] (0,-2) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,-2) -- ++(21:1.7);
+  \path[yshift=\ysh] (0.4,-2) -- ++(21:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  % (+dt)
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[yshift=\ysh,thick,thin,green!50,fill=green!15] (0,-2) node [below right,text=black]{\dt} -- ++(0:1) arc (0:-90:1cm);     
+  \end{pgfonlayer}
+
+
+  \def\ysh{-11cm} \def\pn{END1} \def\dt{$\Delta t$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++({180-21}:1.7);
+  \draw[yshift=\ysh,thick,<-,black!40] (-0.4,0) -- ++({180-21}:1.7) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+  \draw[yshift=\ysh,thick,<-,black!25] (-0.8,0) -- ++({180-21}:1.7);
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[yshift=\ysh,thick,thin,blue!40,fill=blue!10] (0,0) node [below left,text=black]{\dt} -- ++(180:1) arc (-180:-90:1cm);     
+  \end{pgfonlayer}
+
+
+  \def\ysh{-12cm} \def\pn{END2} \def\dt{$\Delta t$}
+  \draw[yshift=\ysh,fill=black!15] (0,0) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,0) -- ++(21:1.7);
+  \draw[yshift=\ysh,fill=black!15] (0,-0.15) circle (2.5pt);
+  \draw[yshift=\ysh,thick,<-,black] (0,-0.15) -- ++(21:2.1) node[above,fill=red!20,draw=black,text=black,rounded corners]{\pn};
+
+
+  \begin{pgfonlayer}{bg}    % select the background layer
+    \draw[line width=4pt,dashed,black!15] (-8,-4) -- (4,-4);
+    \draw[line width=4pt,dashed,black!15] (-8,-10) -- (4,-10);
+  \end{pgfonlayer}
+
+
+  \def\xsh{-7.5cm} \def\ysh{-6cm}
+  \path[xshift=\xsh,yshift=\ysh]
+    (2.5,.5) node[black!50] {Shifted Float Mask}
+    (0,0) node[draw] {BASE}
+    (3,0) node[draw] {011111111...11111110101011};
+
+
+  \path
+    (-8,-2) node[rotate=90] {Handshake}
+    (-8,-8) node[rotate=90] {Data Exchange}
+    (-8,-12) node[rotate=90] {Finish};
+
+
+\end{tikzpicture}
+\end{center}
+\end{document}
