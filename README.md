@@ -4,4 +4,5 @@
 
 /ball - client
 
+/doc/SOUP.pdf - short protocol description.
 
